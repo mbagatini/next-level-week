@@ -3,7 +3,20 @@ import knex from "../database/connection";
 
 class PointsController {
   async index(req: Request, res: Response) {
-    return res.json(await knex("points").select("*"));
+    const { city, uf, items } = req.query;
+
+    const parsedItems = String(items)
+      .split(",")
+      .map((item) => Number(item.trim()));
+
+    const points = await knex("points")
+      .join("point_items", "points.id", "=", "point_items.point")
+      .whereIn("point_items.item", parsedItems)
+      .where("city", String(city))
+      .where("uf", String(uf))
+      .select("points.*");
+
+    return res.json(points);
   }
 
   async show(req: Request, res: Response) {
@@ -14,7 +27,12 @@ class PointsController {
       return res.status(400).json({ message: "Point not found" });
     }
 
-    return res.json(point);
+    const items = await knex("items")
+      .join("point_items", "items.id", "=", "point_items.item")
+      .where("point_items.point", id)
+      .select("items.title");
+
+    return res.json({ point, items });
   }
 
   async create(req: Request, res: Response) {
@@ -37,7 +55,8 @@ class PointsController {
       longitude,
       city,
       uf,
-      image: "image-fake",
+      image:
+        "https://images.unsplash.com/photo-1556767576-5ec41e3239ea?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
     };
 
     const trx = await knex.transaction();
@@ -53,6 +72,8 @@ class PointsController {
     });
 
     await trx("point_items").insert(pointItems);
+
+    await trx.commit();
 
     return res.json({ id: point_id, ...pointItems });
   }
