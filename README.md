@@ -6,7 +6,7 @@
 	NextLevelWeek 1.0
 </h4> 
 
-Projeto desenvolvido durante a **NLW - Next Level Week** oferecida pela [Rocketseat](rs).
+Projeto desenvolvido durante a **NLW - Next Level Week** oferecida pela [Rocketseat][rs].
 O NLW é uma experiência online com muito conteúdo prático, desafios e hacks onde o conteúdo fica disponível durante uma semana.
 
 
@@ -60,7 +60,6 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
 - [Node.js][nodejs]
 - [React][reactjs]
-- [React Native][rn]
 - [TypeScript][typescript]
 
 ## 📝 Licença
